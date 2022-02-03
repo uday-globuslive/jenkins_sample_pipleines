@@ -1,0 +1,61 @@
+pipeline {
+    agent none
+    
+    environment{
+        git_repo = "git@github.com:uday-globuslive/hello-world.git"
+        git_branch = 'master'
+        git_id = 'github-user'
+        build_node = 'master'
+    }
+
+    tools {
+        // Install the Maven version configured as "M3" and add it to the path.
+        maven "local_maven"
+    }
+
+    stages {
+        stage('Code Download')
+        {
+            
+            steps{
+                
+                node("$build_node"){
+                    
+                    checkout([$class: 'GitSCM', branches: [[name: "*/$git_branch"]], extensions: [[$class: 'CleanBeforeCheckout'], [$class: 'CheckoutOption', timeout: 50], [$class: 'CloneOption', noTags: false, reference: '', shallow: false, timeout: 60]], userRemoteConfigs: [[credentialsId: "$git_id", url: "$git_repo"]]])
+            
+                }
+            }
+        }
+        stage('Build') {
+            steps {
+                // Get some code from a GitHub repository
+                node("$build_node"){
+                  
+                    
+                    // Run Maven on a Unix agent.
+                    dir('webapp'){
+                        tool name: 'local_maven', type: 'maven'
+                        sh "$MAVEN_HOME/bin/mvn clean package"
+                    }
+                
+                
+                }
+                
+            }
+
+            
+        }
+         stage('Message') {
+            steps {
+                node("$build_node"){
+                      echo 'my message'
+                      
+                      build quietPeriod: 10, job: 'sample-project-1'
+                }
+              
+            }
+
+         
+        }
+    }
+}
