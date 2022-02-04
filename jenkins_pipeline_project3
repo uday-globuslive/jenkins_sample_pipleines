@@ -32,7 +32,7 @@ pipeline {
                 // Get some code from a GitHub repository
                 node("$build_node"){
                   
-                    withAnt(instalaltion: 'test', jdk: 'jdk11'){
+                    withAnt(installation: 'test', jdk: 'jdk11'){
                     // Run Maven on a Unix agent.
                     dir('webapp'){
                         tool name: 'local_maven', type: 'maven'
