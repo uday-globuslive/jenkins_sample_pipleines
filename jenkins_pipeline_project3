@@ -5,7 +5,7 @@ pipeline {
         git_repo = "git@github.com:uday-globuslive/hello-world.git"
         git_branch = 'master'
         git_id = 'github-user'
-        build_node = 'master'
+        build_node = 'windowstest'
     }
 
     tools {
